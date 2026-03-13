@@ -93,7 +93,7 @@ public class Driver {
 
     private static HashMap<Integer, Zone> makePlasticPlantZones() {
         HashMap<Integer, Zone> zones = new HashMap<>();
-        zones.put(7, Zone.allZones.get(7));
+        zones.put(7, Zone.zones.get(7));
         return zones;
     }
 
@@ -101,9 +101,9 @@ public class Driver {
 
         HashMap<Integer, Zone> zones = new HashMap<>();
 
-        zones.put(6, Zone.allZones.get(6));
-        zones.put(7, Zone.allZones.get(7));
-        zones.put(8, Zone.allZones.get(8));
+        zones.put(6, Zone.zones.get(6));
+        zones.put(7, Zone.zones.get(7));
+        zones.put(8, Zone.zones.get(8));
 
         return new Tree(
                 "Acer palmatum",
@@ -118,10 +118,10 @@ public class Driver {
 
         HashMap<Integer, Zone> zones = new HashMap<>();
 
-        zones.put(3, Zone.allZones.get(3));
-        zones.put(4, Zone.allZones.get(4));
-        zones.put(5, Zone.allZones.get(5));
-        zones.put(6, Zone.allZones.get(6));
+        zones.put(3, Zone.zones.get(3));
+        zones.put(4, Zone.zones.get(4));
+        zones.put(5, Zone.zones.get(5));
+        zones.put(6, Zone.zones.get(6));
 
         return new Tree(
                 "Tsuga canadensis",
@@ -136,7 +136,7 @@ public class Driver {
 
         HashMap<Integer, Zone> zones = new HashMap<>();
 
-        zones.put(9, Zone.allZones.get(9));
+        zones.put(9, Zone.zones.get(9));
 
         return new FloweringPlant(
                 "Murraya paniculata",
@@ -152,10 +152,10 @@ public class Driver {
 
         HashMap<Integer, Zone> zones = new HashMap<>();
 
-        zones.put(5, Zone.allZones.get(5));
-        zones.put(6, Zone.allZones.get(6));
-        zones.put(7, Zone.allZones.get(7));
-        zones.put(8, Zone.allZones.get(8));
+        zones.put(5, Zone.zones.get(5));
+        zones.put(6, Zone.zones.get(6));
+        zones.put(7, Zone.zones.get(7));
+        zones.put(8, Zone.zones.get(8));
 
         return new FloweringPlant(
                 "Convallaria majalis",
@@ -206,7 +206,11 @@ public class Driver {
             }
 
             if (test != null) {
-                System.out.println(choice.replace("_", " ") + ": " + test.test(p));
+                if (choice.equals("least_experienced")) {
+                    System.out.println("least experience: " + test.test(p));
+                } else {
+                    System.out.println("most experience: " + test.test(p));
+                }
             }
 
             System.out.println("good for your zone: " + p.growsInZone(7));

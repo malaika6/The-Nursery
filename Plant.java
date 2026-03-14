@@ -1,20 +1,39 @@
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
+
 public class Plant {
+
+    private static long nextId = 4902;
 
     private long id;
     private String genusSpecies;
     private String commonName;
     enum PlantGroup {ANGIOSPERMS, GYMNOSPERMS, PTERIDOPHYTES, BRYOPHYTES}
+    private PlantGroup plantGroup;
     private LocalDate dateIntroduced;
-    private Zone zone;
+    private HashMap<Integer, Zone> zones;
 
-    public Plant(long id, String commonName, String genusSpecies, LocalDate dateIntroduced, Zone zone) {
-        this.id = id;
+    public static HashMap<String, Predicate<Plant>> evaluators = new HashMap<>();
+
+    static {
+        evaluators.put("most_experienced",
+                p -> p.getDateIntroduced().equals(Driver.oldestDate));
+
+        evaluators.put("least_experienced",
+                p -> p.getDateIntroduced().equals(Driver.newestDate));
+    }
+
+    public Plant(String commonName, String genusSpecies, PlantGroup plantGroup,
+                 LocalDate dateIntroduced, HashMap<Integer, Zone> zones) {
+        this.id = nextId;
+        nextId++;
         setGenusSpecies(genusSpecies);
         setCommonName(commonName);
+        setPlantGroup(plantGroup);
         this.dateIntroduced = dateIntroduced;
-        this.zone = zone;
+        this.zones = zones;
     }
 
     public long getId() {
@@ -26,7 +45,7 @@ public class Plant {
     }
 
     public void setGenusSpecies(String genusSpecies) {
-       validateGenusSpecies(genusSpecies);
+        validateGenusSpecies(genusSpecies);
         this.genusSpecies = genusSpecies;
     }
 
@@ -39,6 +58,14 @@ public class Plant {
         this.commonName = commonName;
     }
 
+    public PlantGroup getPlantGroup() {
+        return plantGroup;
+    }
+
+    public void setPlantGroup(PlantGroup plantGroup) {
+        this.plantGroup = plantGroup;
+    }
+
     public LocalDate getDateIntroduced() {
         return dateIntroduced;
     }
@@ -47,12 +74,49 @@ public class Plant {
         this.dateIntroduced = dateIntroduced;
     }
 
-    public Zone getZone() {
-        return zone;
+    public HashMap<Integer, Zone> getZones() {
+        return zones;
     }
 
-    public void setZone(Zone zone) {
-        this.zone = zone;
+    public void setZones(HashMap<Integer, Zone> zones) {
+        this.zones = zones;
+    }
+
+    @Override
+    public String toString() {
+        return commonName + " (" + genusSpecies + ")";
+    }
+
+    public boolean growsInZone(int zoneNumber) {
+        return zones.containsKey(zoneNumber);
+    }
+
+    public static void validateGenusSpecies(String genusSpecies) {
+        if (genusSpecies == null || genusSpecies.isBlank()) {
+            throw new IllegalArgumentException("Genus and species name must not be empty.");
+        }
+
+        if (genusSpecies.length() < 7 || genusSpecies.length() > 39) {
+            throw new IllegalArgumentException("Genus and species name must be between 7 and 39 characters.");
+        }
+
+        if (!Pattern.matches("^[A-Z][a-zA-Z-]* [a-zA-Z- ]+$", genusSpecies)) {
+            throw new IllegalArgumentException(
+                "Genus/species must be like 'Genus species'. Genus starts with one capital letter."
+            );
+        }
+    }
+
+    public static void validateCommonName(String commonName) {
+        if (commonName == null || commonName.isBlank()) {
+            throw new IllegalArgumentException("Common name cannot be empty.");
+        }
+
+        if (!Pattern.matches("^[A-Z][a-zA-Z'\\- ]*$", commonName)) {
+            throw new IllegalArgumentException("Common name must start with a capital letter.");
+        }
+    }
+}
     }
 
     @Override
